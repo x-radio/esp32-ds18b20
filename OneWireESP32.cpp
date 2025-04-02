@@ -46,6 +46,9 @@ const rmt_transmit_config_t owtxconf = {
 const rmt_receive_config_t owrxconf = {
 	.signal_range_min_ns = 1000,
 	.signal_range_max_ns = (OW_RESET_PULSE + OW_RESET_WAIT) * 1000,
+	.flags = {
+		.en_partial_rx = 0,
+	},
 };
 
 
@@ -75,12 +78,13 @@ OneWire32::OneWire32(uint8_t pin){
 		.clk_src = RMT_CLK_SRC_DEFAULT,
 		.resolution_hz = 1000000,
 		.mem_block_symbols = MAX_BLOCKS,
+		.intr_priority = 0,
 		.flags = {
 			.invert_in = 0,
 			.with_dma = 0,
 			.io_loop_back = 0,
+			.allow_pd = 0,
 		},
-		.intr_priority = 0
 	};
 
 	if(rmt_new_rx_channel(&rxconf, &(owrx)) != ESP_OK) {
@@ -98,7 +102,8 @@ OneWire32::OneWire32(uint8_t pin){
 			.invert_out = 0,
 			.with_dma = 0,
 			.io_loop_back = 1,
-			.io_od_mode = 1
+			.io_od_mode = 1,
+			.allow_pd = 0,
 		}
 	};
 
